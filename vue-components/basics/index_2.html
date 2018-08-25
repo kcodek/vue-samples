@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ComponentBasics_2</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="blog-post-emitting-value-with-event">
+        <div :style="{ fontSize: postFontSize + 'em' }">
+            <blog-post4 v-for="post in posts" v-bind:key="post.id" v-bind:post="post" v-on:enlarge-text="onEnlargeText" @minify-text="postFontSize -=$event">
+            </blog-post4>
+        </div>
+    </div>
+
+    <br>
+    <div id="using-vmodel-on-components">
+        <!-- <input v-model="searchText"> -->
+        <input type="text" v-bind:value="searchText" @input="searchText = $event.target.value">
+
+        <custom-input
+        :value="searchText"
+        @input="searchText = $event">
+        </custom-input>
+
+        <custom-input v-model="searchText"></custom-input>    
+
+
+        <alert-box>
+            Something bad happened.
+        </alert-box>
+    </div>
+    
+    
+    <script>
+
+        Vue.component('blog-post4',{
+            props:['post'],
+            template:`
+                <div class="blog-post">
+                    <h4> {{ post.title }}</h4>
+                    <button v-on:click="$emit('enlarge-text',0.1)">
+                        Enlarge text
+                    </button>
+                    <button v-on:click="$emit('minify-text',0.1)">
+                        Minify text
+                    </button>
+                    <div v-html="post.content"></div>
+                </div>
+            `,
+           
+
+        })
+        
+        new Vue({
+            el:"#blog-post-emitting-value-with-event",
+            data: {
+                posts: [
+                    { id: 1, title: 'My journey with Vue' },
+                    { id: 2, title: 'Blogging with Vue' },
+                    { id: 3, title: 'Why Vue is so fun' }
+                ],
+                postFontSize: 1,               
+            },
+            methods:{
+                onEnlargeText:function(enLargeAmount){
+                    this.postFontSize += enLargeAmount
+                }
+            }
+
+        })
+
+        Vue.component('custom-input',{
+            props:['value'],
+            template:`
+                <input
+                    v-bind:value="value",
+                    v-on:input="$emit('input',$event.target.value)"
+                >
+
+            `
+        })
+
+        Vue.component('alert-box', {
+            template: `
+                <div class="demo-alert-box">
+                    <strong>Error!</strong>
+                    <slot></slot>
+                </div>
+            `
+})
+    //Dynamic Components
+
+    //DOM Template Parsing Caveats
+
+    </script>
+</body>
+</html>
