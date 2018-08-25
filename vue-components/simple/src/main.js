@@ -1,5 +1,6 @@
 // src/main.js
 import App from './components/App.js';
+// import App from 'components/App'
 
 new Vue({
   render: h => h(App),
